@@ -1,6 +1,6 @@
 
 conky.config = {
-    alignment = 'top_right',
+    alignment = 'middle_right',
     background = false,
     border_width = 1,
     double_buffer = true,
@@ -14,8 +14,6 @@ conky.config = {
     draw_shades = false,
     use_xft = true,
     font = 'DejaVu Sans Mono:size=12',
-    gap_x = 5,
-    gap_y = 60,
     minimum_height = 5,
 	minimum_width = 5,
     net_avg_samples = 2,
