@@ -15,4 +15,5 @@ cp ./.conkyrc ~/.conkyrc -f
 
 #Restarts Conky
 pkill -f conky
+cd ~ || exit
 conky -b > /dev/null 2>&1 &

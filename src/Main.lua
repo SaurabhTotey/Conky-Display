@@ -29,5 +29,5 @@ end
 The draw function that describes how the window will look
 ]]
 function draw(surface, context)
-	DrawingUtility.writeText(context, "Saurabh Totey", 0, 0)
+	DrawingUtility.writeText(context, "Saurabh Totey", 1750, 300, 150)
 end
