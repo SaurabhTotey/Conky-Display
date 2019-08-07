@@ -1,5 +1,5 @@
 require "cairo"
-local DrawingUtility = require("/Development/Personal/ConkyDisplay/src/DrawingUtility")
+local DrawingUtility = require("/Development/Personal/Conky-Display/src/DrawingUtility")
 
 --[[
 Main entry point of the application

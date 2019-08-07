@@ -11,7 +11,7 @@ conky.config = {
 	double_buffer = true,
 
 
-	lua_load = "~/Development/Personal/ConkyDisplay/src/Main.lua",
+	lua_load = "~/Development/Personal/Conky-Display/src/Main.lua",
 	lua_draw_hook_post = "main",
 
 	minimum_width = 3840,
