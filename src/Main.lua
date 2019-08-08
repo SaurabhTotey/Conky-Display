@@ -29,6 +29,11 @@ end
 The draw function that describes how the window will look
 ]]
 function draw(surface, context)
+
+	-- TITLE --
+	local titleText = "Saurabh Totey"
 	DrawingUtility.setTextOptions(context, 150)
-	DrawingUtility.writeText(context, "Saurabh Totey", 2150, 250)
+	local titleSize = DrawingUtility.getTextSize(context, titleText)
+	DrawingUtility.writeText(context, titleText, conky_window.width * 3 / 4 - titleSize.w / 2, titleSize.h + 10)
+
 end

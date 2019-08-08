@@ -3,6 +3,18 @@ require "cairo"
 local DrawingUtility = {}
 
 --[[
+A function that makes a rectangle
+]]
+function DrawingUtility.Rectangle(x, y, w, h)
+	local rectangle = {}
+	rectangle.x = x;
+	rectangle.y = y;
+	rectangle.w = w;
+	rectangle.h = h;
+	return rectangle;
+end
+
+--[[
 A function that sets the context's color to the given r, g, b, and a values
 Default color is purple
 ]]
@@ -35,6 +47,15 @@ function DrawingUtility.setTextOptions(context, fontSize, fontFamily, r, g, b, a
 	cairo_set_font_size(context, fontSize)
 	DrawingUtility.setColor(context, r, g, b, a)
 
+end
+
+--[[
+Gets the size that a given string of text will take up when rendered under the current settings
+]]
+function DrawingUtility.getTextSize(context, text)
+	local extents = cairo_text_extents_t:create()
+	cairo_text_extents(context, text, extents)
+	return DrawingUtility.Rectangle(extents.x_bearing, extents.y_bearing, extents.width, extents.height)
 end
 
 --[[
