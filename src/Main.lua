@@ -1,4 +1,6 @@
 require "cairo"
+local http = require("socket.http")
+local json = require("/Development/Personal/Conky-Display/src/json")
 local DrawingUtility = require("/Development/Personal/Conky-Display/src/DrawingUtility")
 
 environmentVariables = nil
@@ -18,7 +20,7 @@ function conky_main()
 	local cairoSurface = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 	local cairoContext = cairo_create(cairoSurface)
 
-	--Extracts environment variables
+	--Extract environment variables if they haven't yet been set
 	if environmentVariables == nil then
 		environmentVariables = {}
 		for line in io.lines("Development/Personal/Conky-Display/.env") do
@@ -30,6 +32,7 @@ function conky_main()
 	draw(cairoSurface, cairoContext)
 
 	--Free resources
+	DrawingUtility.freeAllImages();
 	cairo_destroy(cairoContext)
 	cairo_surface_destroy(cairoSurface)
 
@@ -46,5 +49,13 @@ function draw(surface, context)
 	DrawingUtility.setTextOptions(context, 150)
 	local titleSize = DrawingUtility.getTextSize(context, titleText)
 	DrawingUtility.writeText(context, titleText, conky_window.width * 3 / 4 - titleSize.w / 2, titleSize.h + 10)
+
+	-- WEATHER --
+	local weatherDataString, status, headers = http.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric")
+	local weatherData = json.decode(weatherDataString)
+	-- local weatherIcon = DrawingUtility.getImageSurface("http://openweathermap.org/img/w/" .. weatherData["weather"][1]["icon"] .. ".png")
+	-- cairo_set_source_surface(context, weatherIcon, 500, 500);
+	-- cairo_paint(context);
+
 
 end

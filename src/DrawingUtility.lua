@@ -2,6 +2,8 @@ require "cairo"
 
 local DrawingUtility = {}
 
+local storedImageSurfaces = {}
+
 --[[
 A function that makes a rectangle
 ]]
@@ -67,6 +69,25 @@ function DrawingUtility.writeText(context, text, x, y)
 	cairo_move_to(context, x, y)
 	cairo_show_text(context, text)
 	cairo_stroke(context)
+end
+
+--[[
+Gets a surface that represents the image at the given path
+]]
+function DrawingUtility.getImageSurface(path)
+	local imageSurface = cairo_image_surface_create_from_png(path);
+	table.insert(storedImageSurfaces, imageSurface);
+	return imageSurface
+end
+
+--[[
+Frees all references to stored image surfaces so that no memory leaks occur
+]]
+function DrawingUtility.freeAllImages()
+	for i = 1, table.getn(storedImageSurfaces) do
+		cairo_surface_destroy(storedImageSurfaces[i])
+		storedImageSurfaces[i] = nil
+	end
 end
 
 return DrawingUtility
