@@ -16,14 +16,14 @@ end
 
 --[[
 A function that sets the context's color to the given r, g, b, and a values
-Default color is purple
+Default color is black
 ]]
 function DrawingUtility.setColor(context, r, g, b, a)
 
 	--Getting parameters
-	r = r or 138
-	g = g or 43
-	b = b or 226
+	r = r or 0
+	g = g or 0
+	b = b or 0
 	a = a or 255
 
 	--Actually setting color of context
