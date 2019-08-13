@@ -10,12 +10,14 @@ conky.config = {
 	own_window_argb_value = 192,
 	double_buffer = true,
 
-
 	lua_load = "~/Development/Personal/Conky-Display/src/Main.lua",
 	lua_draw_hook_post = "main",
 
 	minimum_width = 3840,
-	minimum_height = 2160
+	minimum_height = 2160,
+
+	--TODO: reduce update interval to something like 1 second and just make http requests happen on a separate timer with a larger interval
+	update_interval = 5.0
 }
 
 conky.text = [[]]

@@ -44,18 +44,29 @@ The draw function that describes how the window will look
 ]]
 function draw(surface, context)
 
-	-- TITLE --
+	-------------------- TITLE --------------------
 	local titleText = "Saurabh Totey"
 	DrawingUtility.setTextOptions(context, 150)
 	local titleSize = DrawingUtility.getTextSize(context, titleText)
 	DrawingUtility.writeText(context, titleText, conky_window.width * 3 / 4 - titleSize.w / 2, titleSize.h + 10)
 
-	-- WEATHER --
+	-------------------- WEATHER --------------------
+	--Load weather data
 	local weatherDataString, status, headers = http.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric")
 	local weatherData = json.decode(weatherDataString)
-	-- local weatherIcon = DrawingUtility.getImageSurface("http://openweathermap.org/img/w/" .. weatherData["weather"][1]["icon"] .. ".png")
-	-- cairo_set_source_surface(context, weatherIcon, 500, 500);
-	-- cairo_paint(context);
-
+	--Load weather icon file information
+	local iconImageData, status, headers = http.request("http://openweathermap.org/img/wn/" .. weatherData["weather"][1]["icon"] .. "@2x.png")
+	local weatherIconPath = "/home/saurabhtotey/Development/Personal/Conky-Display/assets/weatherIcon.png"
+	local weatherIconFile = assert(io.open(weatherIconPath, "wb"))
+	weatherIconFile:write(iconImageData)
+	weatherIconFile:close()
+	--Get weather icon as a surface and manipulate/draw it
+	local weatherIcon = DrawingUtility.getImageSurface(weatherIconPath)
+	local scaleX = 512 / cairo_image_surface_get_width(weatherIcon)
+	local scaleY = 512 / cairo_image_surface_get_height(weatherIcon)
+	cairo_scale(context, scaleX, scaleY)
+	cairo_set_source_surface(context, weatherIcon, conky_window.width / 2 / scaleX, (titleSize.h + 20) / scaleY)
+	cairo_paint(context)
+	cairo_scale(context, 1, 1)
 
 end
