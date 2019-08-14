@@ -92,6 +92,7 @@ end
 
 --[[
 Sets the options for how lines will be drawn on screen
+Affects anything that is made with lines (such as rectangles)
 ]]
 function DrawingUtility.setLineOptions(context, width, r, g, b, a, cap, join)
 
@@ -118,6 +119,15 @@ Draws a line from the given x and y to the given x and y
 function DrawingUtility.drawLine(context, startX, startY, endX, endY)
 	cairo_move_to(context, startX, startY)
 	cairo_line_to(context, endX, endY)
+	cairo_stroke(context)
+end
+
+--[[
+Draws a rectangle using the given rectangle table
+Uses line options
+]]
+function DrawingUtility.drawRectangle(context, rectangle)
+	cairo_rectangle(context, rectangle.x, rectangle.y, rectangle.w, rectangle.h)
 	cairo_stroke(context)
 end
 
