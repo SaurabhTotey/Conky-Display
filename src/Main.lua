@@ -46,7 +46,7 @@ function draw(surface, context)
 
 	-------------------- TITLE --------------------
 	local titleText = "Saurabh Totey"
-	DrawingUtility.setTextOptions(context, 150)
+	DrawingUtility.setTextOptions(context, 100)
 	local titleSize = DrawingUtility.getTextSize(context, titleText)
 	DrawingUtility.writeText(context, titleText, conky_window.width * 3 / 4 - titleSize.w / 2, titleSize.h + 10)
 
@@ -62,8 +62,8 @@ function draw(surface, context)
 	weatherIconFile:close()
 	--Get weather icon as a surface and manipulate/draw it
 	local weatherIcon = DrawingUtility.getImageSurface(weatherIconPath)
-	local scaleX = 512 / cairo_image_surface_get_width(weatherIcon)
-	local scaleY = 512 / cairo_image_surface_get_height(weatherIcon)
+	local scaleX = 300 / cairo_image_surface_get_width(weatherIcon)
+	local scaleY = 300 / cairo_image_surface_get_height(weatherIcon)
 	cairo_scale(context, scaleX, scaleY)
 	cairo_set_source_surface(context, weatherIcon, conky_window.width / 2 / scaleX, (titleSize.h + 20) / scaleY)
 	cairo_paint(context)
