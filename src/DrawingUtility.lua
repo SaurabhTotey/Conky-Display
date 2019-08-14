@@ -44,7 +44,7 @@ function DrawingUtility.setTextOptions(context, fontSize, fontFamily, r, g, b, a
 	fontWeight = fontWeight or CAIRO_FONT_WEIGHT_NORMAL
 	fontSlant = fontSlant or CAIRO_FONT_SLANT_NORMAL
 
-	--Setting the configurations for drawing this text
+	--Setting the configurations for drawing text
 	cairo_select_font_face(context, fontFamily, fontSlant, fontWeight)
 	cairo_set_font_size(context, fontSize)
 	DrawingUtility.setColor(context, r, g, b, a)
@@ -88,6 +88,37 @@ function DrawingUtility.freeAllImages()
 		cairo_surface_destroy(storedImageSurfaces[i])
 		storedImageSurfaces[i] = nil
 	end
+end
+
+--[[
+Sets the options for how lines will be drawn on screen
+]]
+function DrawingUtility.setLineOptions(context, width, r, g, b, a, cap, join)
+
+	--Getting parameters
+	width = width or 1
+	r = r or 255
+	g = g or 255
+	b = b or 255
+	a = a or 255
+	cap = cap or CAIRO_LINE_CAP_BUTT
+	join = join or CAIRO_LINE_JOIN_MITER
+
+	--Setting the configurations for drawing lines
+	cairo_set_line_width(context, width)
+	cairo_set_line_cap(context, cap)
+	cairo_set_line_join(context, join)
+	DrawingUtility.setColor(context, r, g, b, a)
+
+end
+
+--[[
+Draws a line from the given x and y to the given x and y
+]]
+function DrawingUtility.drawLine(context, startX, startY, endX, endY)
+	cairo_move_to(context, startX, startY)
+	cairo_line_to(context, endX, endY)
+	cairo_stroke(context)
 end
 
 return DrawingUtility
