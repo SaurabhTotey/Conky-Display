@@ -75,21 +75,28 @@ function draw(surface, context)
 	weatherIconFile:close()
 	--Get weather icon as a surface and manipulate/draw it
 	local weatherIcon = DrawingUtility.getImageSurface(weatherIconPath)
-	local scaleX = 300 / cairo_image_surface_get_width(weatherIcon)
-	local scaleY = 300 / cairo_image_surface_get_height(weatherIcon)
+	local scaleX = columnWidth / 2 / cairo_image_surface_get_width(weatherIcon)
+	local scaleY = columnWidth / 2 / cairo_image_surface_get_height(weatherIcon)
 	cairo_scale(context, scaleX, scaleY)
-	cairo_set_source_surface(context, weatherIcon, conky_window.width / 2 / scaleX, (titleSize.h + 60) / scaleY)
+	cairo_set_source_surface(context, weatherIcon, (rowX + firstRowPadding) / scaleX, rowY / scaleY)
 	cairo_paint(context)
 	cairo_scale(context, 1 / scaleX, 1 / scaleY)
 	--Write the weather description
 	local weatherDescription = weatherData["weather"][1]["description"]
-	DrawingUtility.setTextOptions(context, 50)
+	local weatherDescriptionFontSize = 1000
+	DrawingUtility.setTextOptions(context, weatherDescriptionFontSize)
 	local weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)
-	DrawingUtility.writeText(context, weatherDescription, conky_window.width / 2 + 300, titleSize.h + 80 + 150 - weatherDescriptionSize.h)
+	while weatherDescriptionSize.w > columnWidth / 2 - 25 do
+		weatherDescriptionFontSize = weatherDescriptionFontSize - 1
+		DrawingUtility.setTextOptions(context, weatherDescriptionFontSize)
+		weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)
+	end
+	DrawingUtility.writeText(context, weatherDescription, rowX + firstRowPadding + columnWidth / 2, rowY + rowWidth / 2)
 	--Write the temperature
 	local temperature = math.floor(weatherData["main"]["temp"] + 0.5) .. "°C"
+	DrawingUtility.setTextOptions(context, 50)
 	local temperatureSize = DrawingUtility.getTextSize(context, temperature)
-	DrawingUtility.writeText(context, temperature, conky_window.width / 2 + 300, titleSize.h + 80 + 150 + temperatureSize.h)
+	DrawingUtility.writeText(context, temperature, rowX + firstRowPadding + columnWidth / 2, rowY + rowWidth / 2 + temperatureSize.h)
 
 	-------------------- WORD OF THE DAY --------------------
 	--Draw rectangle around area for displaying the word of the day; is only used for debugging
