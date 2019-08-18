@@ -53,9 +53,17 @@ function draw(surface, context)
 	local titleSize = DrawingUtility.getTextSize(context, titleText)
 	DrawingUtility.writeText(context, titleText, conky_window.width * 3 / 4 - titleSize.w / 2, titleSize.h + 10)
 
+	-------------------- CONSTANTS FOR FIRST ROW --------------------
+	local firstRowPadding = 50
+	local firstRowNumberOfColumns = 3
+	local columnWidth = (conky_window.width / 2 - (firstRowNumberOfColumns + 1) * firstRowPadding) / firstRowNumberOfColumns
+	local rowWidth = 280
+	local rowX = conky_window.width / 2
+	local rowY = titleSize.h + 80
+
 	-------------------- WEATHER --------------------
 	--Draw rectangle around area for displaying weather; is only used for debugging
-	DrawingUtility.drawRectangle(context, DrawingUtility.Rectangle(conky_window.width / 2 + 50, titleSize.h + 80, conky_window.width / 4 - 50, 280))
+	DrawingUtility.drawRectangle(context, DrawingUtility.Rectangle(rowX + firstRowPadding, rowY, columnWidth, rowWidth))
 	--Load weather data
 	local weatherDataString, status, headers = http.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric")
 	local weatherData = json.decode(weatherDataString)
@@ -77,6 +85,18 @@ function draw(surface, context)
 	local weatherDescription = weatherData["weather"][1]["description"]
 	DrawingUtility.setTextOptions(context, 50)
 	local weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)
-	DrawingUtility.writeText(context, weatherDescription, conky_window.width * 5 / 8 + 150 - weatherDescriptionSize.w / 2, titleSize.h + 230 - weatherDescriptionSize.h)
+	DrawingUtility.writeText(context, weatherDescription, conky_window.width / 2 + 300, titleSize.h + 80 + 150 - weatherDescriptionSize.h)
+	--Write the temperature
+	local temperature = math.floor(weatherData["main"]["temp"] + 0.5) .. "°C"
+	local temperatureSize = DrawingUtility.getTextSize(context, temperature)
+	DrawingUtility.writeText(context, temperature, conky_window.width / 2 + 300, titleSize.h + 80 + 150 + temperatureSize.h)
+
+	-------------------- WORD OF THE DAY --------------------
+	--Draw rectangle around area for displaying the word of the day; is only used for debugging
+	DrawingUtility.drawRectangle(context, DrawingUtility.Rectangle(rowX + firstRowPadding * 2 + columnWidth, rowY, columnWidth, rowWidth))
+
+	-------------------- TIME AND DAY --------------------
+	--Draw rectangle around area for displaying the date/time; is only used for debugging
+	DrawingUtility.drawRectangle(context, DrawingUtility.Rectangle(rowX + firstRowPadding * 3 + columnWidth * 2, rowY, columnWidth, rowWidth))
 
 end
