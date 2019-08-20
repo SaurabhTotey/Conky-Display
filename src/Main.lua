@@ -86,7 +86,7 @@ function draw(surface, context)
 	local weatherDescriptionFontSize = 1000
 	DrawingUtility.setTextOptions(context, weatherDescriptionFontSize)
 	local weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)
-	while weatherDescriptionSize.w > columnWidth / 2 - 25 do
+	while weatherDescriptionSize.w > columnWidth / 2 - 25 and columnWidth > 0 do
 		weatherDescriptionFontSize = weatherDescriptionFontSize - 1
 		DrawingUtility.setTextOptions(context, weatherDescriptionFontSize)
 		weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)

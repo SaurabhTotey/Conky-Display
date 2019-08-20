@@ -10,6 +10,11 @@ conky.config = {
 	own_window_argb_value = 192,
 	double_buffer = true,
 
+	cpu_avg_samples = 2,
+	use_xft = true,
+	net_avg_samples = 2,
+	no_buffers = true,
+
 	lua_load = "~/Development/Personal/Conky-Display/src/Main.lua",
 	lua_draw_hook_post = "main",
 
