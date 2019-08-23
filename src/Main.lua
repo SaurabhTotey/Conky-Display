@@ -91,12 +91,12 @@ function draw(surface, context)
 		DrawingUtility.setTextOptions(context, weatherDescriptionFontSize)
 		weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)
 	end
-	DrawingUtility.writeText(context, weatherDescription, rowX + firstRowPadding + columnWidth / 2, rowY + rowWidth / 2)
+	DrawingUtility.writeText(context, weatherDescription, rowX + firstRowPadding + columnWidth / 2, rowY + rowWidth / 2 - 15)
 	--Write the temperature
 	local temperature = math.floor(weatherData["main"]["temp"] + 0.5) .. "°C"
 	DrawingUtility.setTextOptions(context, 50)
 	local temperatureSize = DrawingUtility.getTextSize(context, temperature)
-	DrawingUtility.writeText(context, temperature, rowX + firstRowPadding + columnWidth / 2, rowY + rowWidth / 2 + temperatureSize.h)
+	DrawingUtility.writeText(context, temperature, rowX + firstRowPadding + columnWidth / 2, rowY + rowWidth / 2 + temperatureSize.h + 15)
 
 	-------------------- WORD OF THE DAY --------------------
 	--Draw rectangle around area for displaying the word of the day; is only used for debugging
