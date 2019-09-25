@@ -72,9 +72,23 @@ function DrawingUtility.writeText(context, text, x, y)
 end
 
 --[[
+A function that fits the given text inside the given rectangle, growing to take up as much available space inside the rectangle as possible
+align is an optional parameter that specifies whether the text should be centered or left aligned ("center", "left"); default is center
+]]
+function DrawingUtility.fitTextInsideRectangle(context, text, rectangle, align)
+
+	--Getting parameters
+	align = align or "center"
+
+	--TODO: actually do this: I have already done this for the weather text in Main, but Main would be simplified if that is handled here
+
+end
+
+--[[
 Gets a surface that represents the image at the given path
 ]]
 function DrawingUtility.getImageSurface(path)
+	--TODO: this is easily be sped up because we already almost have basically an image cache
 	local imageSurface = cairo_image_surface_create_from_png(path);
 	table.insert(storedImageSurfaces, imageSurface);
 	return imageSurface
