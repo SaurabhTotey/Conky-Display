@@ -54,8 +54,9 @@ end
 
 --[[
 Actually renders all display elements and handles the coordinate transformations to ensure that all render calls work correctly
+TODO: consult https://www.cairographics.org/manual/cairo-Transformations.html for cairo_translate and cairo_identity_matrix to reset transformation
 ]]
-function LayoutUtility.render()
+function LayoutUtility.render(context)
 	--TODO:
 end
 
