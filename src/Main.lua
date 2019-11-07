@@ -1,7 +1,7 @@
 require "cairo"
-local http = require("socket.http")
 local json = require("/Development/Personal/Conky-Display/src/json")
 local DrawingUtility = require("/Development/Personal/Conky-Display/src/DrawingUtility")
+local NetworkUtility = require("/Development/Personal/Conky-Display/src/NetworkUtility")
 
 environmentVariables = nil
 
@@ -28,6 +28,8 @@ function conky_main()
 			environmentVariables[string.sub(line, 1, splitIndex - 1)] = string.sub(line, splitIndex + 1, string.len(line))
 		end
 	end
+
+	NetworkUtility.update()
 
 	draw(cairoSurface, cairoContext)
 
@@ -65,10 +67,10 @@ function draw(surface, context)
 	--Draw rectangle around area for displaying weather; is only used for debugging
 	DrawingUtility.drawRectangle(context, DrawingUtility.Rectangle(rowX + firstRowPadding, rowY, columnWidth, rowWidth))
 	--Load weather data
-	local weatherDataString, status, headers = http.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric")
+	local weatherDataString = NetworkUtility.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric")
 	local weatherData = json.decode(weatherDataString)
 	--Load weather icon file information
-	local iconImageData, status, headers = http.request("http://openweathermap.org/img/wn/" .. weatherData["weather"][1]["icon"] .. "@2x.png")
+	local iconImageData = NetworkUtility.request("http://openweathermap.org/img/wn/" .. weatherData["weather"][1]["icon"] .. "@2x.png")
 	local weatherIconPath = "/home/saurabhtotey/Development/Personal/Conky-Display/assets/weatherIcon.png"
 	local weatherIconFile = assert(io.open(weatherIconPath, "wb"))
 	weatherIconFile:write(iconImageData)

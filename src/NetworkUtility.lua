@@ -13,7 +13,7 @@ Should be called periodically to update the network utility
 Cleans the cache of old data
 ]]
 function NetworkUtility.update()
-	for path, data in NetworkUtility.cache do
+	for path, data in pairs(NetworkUtility.cache) do
 		if os.time() - NetworkUtility.refreshRate > data.requestTime then
 			NetworkUtility.cache[path] = nil
 		end
