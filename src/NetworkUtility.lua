@@ -31,9 +31,7 @@ function NetworkUtility.request(path)
 		return cached.data
 	end
 	local requestData, status, headers = http.request(path)
-	NetworkUtility.cache[path] = {} --TODO: make this an object literal?
-	NetworkUtility.cache[path].requestTime = os.time()
-	NetworkUtility.cache[path].data = requestData
+	NetworkUtility.cache[path] = { requestTime = os.time(), data = requestData }
 	return requestData
 end
 

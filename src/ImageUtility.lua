@@ -34,9 +34,7 @@ function ImageUtility.getImageSurface(path)
 		return cached.surface
 	end
 	local surface = cairo_image_surface_create_from_png(path)
-	ImageUtility.cache[path] = {} --TODO: make this an object literal?
-	ImageUtility.cache[path].readTime = os.time()
-	ImageUtility.cache[path].surface = surface
+	ImageUtility.cache[path] = { readTime = os.time(), surface = surface }
 	return surface
 end
 
