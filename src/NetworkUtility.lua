@@ -22,20 +22,19 @@ end
 
 --[[
 Gets the data at the given path
-If the data was requested recently enough, a cached version of the data is given instead
+If the data was retrieved recently enough, a cached version of the data is given instead
 Relies on the update function being called regularly to clear the cache of old data
 ]]
 function NetworkUtility.request(path)
 	local cached = NetworkUtility.cache[path]
-	if cached == nil then
-		local requestData, status, headers = http.request(path)
-		NetworkUtility.cache[path] = {}
-		NetworkUtility.cache[path].requestTime = os.time()
-		NetworkUtility.cache[path].data = requestData
-		return requestData
-	else
+	if cached ~= nil then
 		return cached.data
 	end
+	local requestData, status, headers = http.request(path)
+	NetworkUtility.cache[path] = {} --TODO: make this an object literal?
+	NetworkUtility.cache[path].requestTime = os.time()
+	NetworkUtility.cache[path].data = requestData
+	return requestData
 end
 
 return NetworkUtility

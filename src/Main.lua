@@ -1,6 +1,7 @@
 require "cairo"
 local json = require("/Development/Personal/Conky-Display/src/json")
 local DrawingUtility = require("/Development/Personal/Conky-Display/src/DrawingUtility")
+local ImageUtility = require("/Development/Personal/Conky-Display/src/ImageUtility")
 local NetworkUtility = require("/Development/Personal/Conky-Display/src/NetworkUtility")
 
 environmentVariables = nil
@@ -30,11 +31,11 @@ function conky_main()
 	end
 
 	NetworkUtility.update()
+	ImageUtility.update()
 
 	draw(cairoSurface, cairoContext)
 
 	--Free resources
-	DrawingUtility.freeAllImages();
 	cairo_destroy(cairoContext)
 	cairo_surface_destroy(cairoSurface)
 
@@ -69,14 +70,9 @@ function draw(surface, context)
 	--Load weather data
 	local weatherDataString = NetworkUtility.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric")
 	local weatherData = json.decode(weatherDataString)
-	--Load weather icon file information
-	local iconImageData = NetworkUtility.request("http://openweathermap.org/img/wn/" .. weatherData["weather"][1]["icon"] .. "@2x.png")
-	local weatherIconPath = "/home/saurabhtotey/Development/Personal/Conky-Display/assets/weatherIcon.png"
-	local weatherIconFile = assert(io.open(weatherIconPath, "wb"))
-	weatherIconFile:write(iconImageData)
-	weatherIconFile:close()
+	local weatherDescription = weatherData["weather"][1]["description"]
 	--Get weather icon as a surface and manipulate/draw it
-	local weatherIcon = DrawingUtility.getImageSurface(weatherIconPath)
+	local weatherIcon = ImageUtility.getImageSurface("/home/saurabhtotey/Development/Personal/Conky-Display/assets/weather-icons/" .. string.gsub(weatherDescription, "%s+", "-") .. ".png")
 	local scaleX = columnWidth / 2 / cairo_image_surface_get_width(weatherIcon)
 	local scaleY = columnWidth / 2 / cairo_image_surface_get_height(weatherIcon)
 	cairo_scale(context, scaleX, scaleY)
@@ -84,7 +80,6 @@ function draw(surface, context)
 	cairo_paint(context)
 	cairo_scale(context, 1 / scaleX, 1 / scaleY)
 	--Write the weather description
-	local weatherDescription = weatherData["weather"][1]["description"]
 	local weatherDescriptionFontSize = 1000
 	DrawingUtility.setTextOptions(context, weatherDescriptionFontSize)
 	local weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)

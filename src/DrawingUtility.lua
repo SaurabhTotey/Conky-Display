@@ -2,8 +2,6 @@ require "cairo"
 
 local DrawingUtility = {}
 
-local storedImageSurfaces = {}
-
 --[[
 A function that makes a rectangle
 ]]
@@ -82,26 +80,6 @@ function DrawingUtility.fitTextInsideRectangle(context, text, rectangle, align)
 
 	--TODO: actually do this: I have already done this for the weather text in Main, but Main would be simplified if that is handled here
 
-end
-
---[[
-Gets a surface that represents the image at the given path
-]]
-function DrawingUtility.getImageSurface(path)
-	--TODO: this is easily be sped up because we already almost have basically an image cache
-	local imageSurface = cairo_image_surface_create_from_png(path);
-	table.insert(storedImageSurfaces, imageSurface);
-	return imageSurface
-end
-
---[[
-Frees all references to stored image surfaces so that no memory leaks occur
-]]
-function DrawingUtility.freeAllImages()
-	for i = 1, table.getn(storedImageSurfaces) do
-		cairo_surface_destroy(storedImageSurfaces[i])
-		storedImageSurfaces[i] = nil
-	end
 end
 
 --[[
