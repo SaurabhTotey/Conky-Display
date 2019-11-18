@@ -2,8 +2,8 @@ local http = require("socket.http")
 
 local NetworkUtility = {}
 
---How often the network utility will actually send out new requests in seconds
-NetworkUtility.refreshRate = 30
+--How much time must pass before request data will be fetched over the network rather than being retrieved from a cached value in seconds
+NetworkUtility.expirationDuration = 30
 
 --A table that maps a path string to an object; the object is a pair containing requestTime and the request's data
 NetworkUtility.cache = {}
@@ -14,7 +14,7 @@ Cleans the cache of old data
 ]]
 function NetworkUtility.update()
 	for path, data in pairs(NetworkUtility.cache) do
-		if os.time() - NetworkUtility.refreshRate > data.requestTime then
+		if os.time() - NetworkUtility.expirationDuration > data.requestTime then
 			NetworkUtility.cache[path] = nil
 		end
 	end

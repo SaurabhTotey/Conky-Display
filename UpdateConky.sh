@@ -10,4 +10,4 @@ touch ./bin/log.txt
 #Restarts Conky
 pkill -f conky
 cd ~ || exit
-conky > ~/Development/Personal/Conky-Display/bin/log.txt 2>&1 &
+conky -DD > ~/Development/Personal/Conky-Display/bin/log.txt 2>&1 &
