@@ -80,15 +80,8 @@ function draw(surface, context)
 	cairo_paint(context)
 	cairo_scale(context, 1 / scaleX, 1 / scaleY)
 	--Write the weather description
-	local weatherDescriptionFontSize = 1000
-	DrawingUtility.setTextOptions(context, weatherDescriptionFontSize)
-	local weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)
-	while weatherDescriptionSize.w > columnWidth / 2 - 25 and columnWidth > 0 do
-		weatherDescriptionFontSize = weatherDescriptionFontSize - 1
-		DrawingUtility.setTextOptions(context, weatherDescriptionFontSize)
-		weatherDescriptionSize = DrawingUtility.getTextSize(context, weatherDescription)
-	end
-	DrawingUtility.writeText(context, weatherDescription, rowX + firstRowPadding + columnWidth / 2, rowY + rowWidth / 2 - 15)
+	DrawingUtility.setTextOptions(context)
+	DrawingUtility.fitTextInsideRectangle(context, weatherDescription, DrawingUtility.Rectangle(rowX + firstRowPadding + columnWidth / 2, rowY + rowWidth / 2 - 15, columnWidth / 2 - 25, 2000), "left")
 	--Write the temperature
 	local temperature = math.floor(weatherData["main"]["temp"] + 0.5) .. "°C"
 	DrawingUtility.setTextOptions(context, 50)

@@ -72,13 +72,34 @@ end
 --[[
 A function that fits the given text inside the given rectangle, growing to take up as much available space inside the rectangle as possible
 align is an optional parameter that specifies whether the text should be centered or left aligned ("center", "left"); default is center
+Will change the text fontSize
 ]]
 function DrawingUtility.fitTextInsideRectangle(context, text, rectangle, align)
 
 	--Getting parameters
 	align = align or "center"
 
-	--TODO: actually do this: I have already done this for the weather text in Main, but Main would be simplified if that is handled here
+	--Exits if the bounds are unusable
+	if rectangle.w <= 0 or rectangle.h <= 0 then
+		return
+	end
+
+	--Finds the biggest font size that will allow the text to fit inside the given rectangle
+	local maximalFittingFontSize = 1000
+	cairo_set_font_size(context, maximalFittingFontSize)
+	local textSize = DrawingUtility.getTextSize(context, text)
+	while textSize.w > rectangle.w or textSize.h > rectangle.h do
+		maximalFittingFontSize = maximalFittingFontSize - 1
+		cairo_set_font_size(context, maximalFittingFontSize)
+		textSize = DrawingUtility.getTextSize(context, text)
+	end
+
+	--Write the text in the correct aligned position
+	if align == "center" then
+		DrawingUtility.writeText(context, text, rectangle.x + (rectangle.w - textSize.w) / 2, rectangle.y + (rectangle.h - textSize.h) / 2)
+	else
+		DrawingUtility.writeText(context, text, rectangle.x, rectangle.y)
+	end
 
 end
 
