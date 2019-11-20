@@ -9,14 +9,14 @@ ImageUtility.expirationDuration = 60
 ImageUtility.cache = {}
 
 --[[
-Should be called periodically to update the network utility
+Should be called periodically to update the image utility
 Cleans the cache of old data
 ]]
 function ImageUtility.update()
 	for path, data in pairs(ImageUtility.cache) do
 		if os.time() - ImageUtility.expirationDuration > data.readTime then
 			cairo_surface_destroy(data.surface)
-			NetworkUtility.cache[path] = nil
+			ImageUtility.cache[path] = nil
 		end
 	end
 end
