@@ -9,6 +9,16 @@ ImageUtility.expirationDuration = 60
 ImageUtility.cache = {}
 
 --[[
+Removes all cached ImageUtility data
+]]
+function ImageUtility.clearCache()
+	for path, data in pairs(ImageUtility.cache) do
+		cairo_surface_destroy(data.surface)
+	end
+	ImageUtility.cache = {}
+end
+
+--[[
 Should be called periodically to update the image utility
 Cleans the cache of old data
 ]]

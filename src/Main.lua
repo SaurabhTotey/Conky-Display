@@ -7,7 +7,26 @@ local NetworkUtility = require("/Development/Personal/Conky-Display/src/NetworkU
 environmentVariables = nil
 
 --[[
-Main entry point of the application
+Extract environment variables from the .env file
+]]
+function conky_startup()
+	environmentVariables = {}
+	for line in io.lines("Development/Personal/Conky-Display/.env") do
+		local splitIndex = string.find(line, "=")
+		environmentVariables[string.sub(line, 1, splitIndex - 1)] = string.sub(line, splitIndex + 1, string.len(line))
+	end
+end
+
+--[[
+Clears all caches
+]]
+function conky_shutdown()
+	NetworkUtility.clearCache()
+	ImageUtility.clearCache()
+end
+
+--[[
+Main actions of the application
 Gets repeatedly called every update
 ]]
 function conky_main()
@@ -21,15 +40,7 @@ function conky_main()
 	local cairoSurface = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 	local cairoContext = cairo_create(cairoSurface)
 
-	--Extract environment variables if they haven't yet been set
-	if environmentVariables == nil then
-		environmentVariables = {}
-		for line in io.lines("Development/Personal/Conky-Display/.env") do
-			local splitIndex = string.find(line, "=")
-			environmentVariables[string.sub(line, 1, splitIndex - 1)] = string.sub(line, splitIndex + 1, string.len(line))
-		end
-	end
-
+	--Updates utility objects to allow them to clear their caches
 	NetworkUtility.update()
 	ImageUtility.update()
 

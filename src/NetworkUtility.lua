@@ -9,6 +9,13 @@ NetworkUtility.expirationDuration = 30
 NetworkUtility.cache = {}
 
 --[[
+Removes all cached NetworkUtility data
+]]
+function NetworkUtility.clearCache()
+	NetworkUtility.cache = {}
+end
+
+--[[
 Should be called periodically to update the network utility
 Cleans the cache of old data
 ]]
