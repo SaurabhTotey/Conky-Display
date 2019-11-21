@@ -1,5 +1,6 @@
 local http = require("socket.http")
 
+--TODO: allow each request to specify its own expiration duration
 local NetworkUtility = {}
 
 --How much time must pass before request data will be fetched over the network rather than being retrieved from a cached value in seconds

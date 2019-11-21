@@ -2,12 +2,13 @@ require "cairo"
 local json = require("/Development/Personal/Conky-Display/src/json")
 local DrawingUtility = require("/Development/Personal/Conky-Display/src/DrawingUtility")
 local ImageUtility = require("/Development/Personal/Conky-Display/src/ImageUtility")
+local LayoutUtility = require("/Development/Personal/Conky-Display/src/LayoutUtility")
 local NetworkUtility = require("/Development/Personal/Conky-Display/src/NetworkUtility")
 
 environmentVariables = nil
 
 --[[
-Extract environment variables from the .env file
+Extract environment variables from the .env file and initialize LayoutUtility
 ]]
 function conky_startup()
 	environmentVariables = {}
@@ -15,6 +16,8 @@ function conky_startup()
 		local splitIndex = string.find(line, "=")
 		environmentVariables[string.sub(line, 1, splitIndex - 1)] = string.sub(line, splitIndex + 1, string.len(line))
 	end
+
+	LayoutUtility.initialize()
 end
 
 --[[
