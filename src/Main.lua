@@ -1,9 +1,12 @@
 require "cairo"
-local json = require("/Development/Personal/Conky-Display/src/json")
-local DrawingUtility = require("/Development/Personal/Conky-Display/src/DrawingUtility")
-local ImageUtility = require("/Development/Personal/Conky-Display/src/ImageUtility")
-local LayoutUtility = require("/Development/Personal/Conky-Display/src/LayoutUtility")
-local NetworkUtility = require("/Development/Personal/Conky-Display/src/NetworkUtility")
+
+package.path = package.path .. ";/home/saurabhtotey/.conky/src/?.lua"
+
+local json = require("json")
+local DrawingUtility = require("DrawingUtility")
+local ImageUtility = require("ImageUtility")
+local LayoutUtility = require("LayoutUtility")
+local NetworkUtility = require("NetworkUtility")
 
 environmentVariables = nil
 
@@ -12,7 +15,7 @@ Extract environment variables from the .env file and initialize LayoutUtility
 ]]
 function conky_startup()
 	environmentVariables = {}
-	for line in io.lines("Development/Personal/Conky-Display/.env") do
+	for line in io.lines("/home/saurabhtotey/.conky/.env") do
 		local splitIndex = string.find(line, "=")
 		environmentVariables[string.sub(line, 1, splitIndex - 1)] = string.sub(line, splitIndex + 1, string.len(line))
 	end
@@ -86,7 +89,7 @@ function draw(surface, context)
 	local weatherData = json.decode(weatherDataString)
 	local weatherDescription = weatherData["weather"][1]["description"]
 	--Get weather icon as a surface and manipulate/draw it
-	local weatherIcon = ImageUtility.getImageSurface("/home/saurabhtotey/Development/Personal/Conky-Display/assets/weather-icons/" .. string.gsub(weatherDescription, "%s+", "-") .. ".png")
+	local weatherIcon = ImageUtility.getImageSurface("/home/saurabhtotey/.conky/assets/weather-icons/" .. string.gsub(weatherDescription, "%s+", "-") .. ".png")
 	local scaleX = columnWidth / 2 / cairo_image_surface_get_width(weatherIcon)
 	local scaleY = columnWidth / 2 / cairo_image_surface_get_height(weatherIcon)
 	cairo_scale(context, scaleX, scaleY)

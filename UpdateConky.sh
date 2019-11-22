@@ -1,13 +1,10 @@
 #!/bin/bash
 
-#Moves the new config to the location where conky will look for it and use it, replacing the old one
-cp ./.conkyrc ~/.conkyrc -f
-
-#Deletes and recreates the log file
-rm -rf ./bin/log.txt
-touch ./bin/log.txt
+#Replaces the existing conky setup with this new one
+rm -rf ~/.conky
+cp -Rf ./. ~/.conky/
 
 #Restarts Conky
 pkill -f conky
-cd ~ || exit
-conky -DD > ~/Development/Personal/Conky-Display/bin/log.txt 2>&1 &
+cd ~/.conky || exit
+conky -DD -d -c /home/saurabhtotey/.conky/.conkyrc > ./bin/log.txt 2>&1
