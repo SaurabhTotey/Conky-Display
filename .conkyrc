@@ -15,7 +15,7 @@ conky.config = {
 	net_avg_samples = 2,
 	no_buffers = true,
 
-	lua_load = "~/.conky/src/Main.lua",
+	lua_load = "{{PROJECT}}/src/Main.lua",
 	lua_startup_hook = "startup",
 	lua_draw_hook_post = "main",
 	lua_shutdown_hook = "shutdown",
