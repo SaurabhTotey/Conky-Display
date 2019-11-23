@@ -1,0 +1,3 @@
+For all these icons, I took the SVGs from https://github.com/erikflowers/weather-icons/tree/master/svg,
+converted them to PNGs using https://ezgif.com/svg-to-png,
+and then chose images according to https://gist.github.com/tbranyen/62d974681dea8ee0caa1.
