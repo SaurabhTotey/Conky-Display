@@ -21,6 +21,7 @@ do
 done
 
 #Creates a startup script in the output directory that allows the currently deployed conky setup to be restarted
+#TODO: make startup create separate logs for each run
 touch ./RunConky.sh
 printf "%s\n" "#!/bin/bash" "pkill -f conky" "rm -rf ./bin/" "mkdir ./bin" "touch ./bin/log.txt" "conky -DD -d -c $projectDir/.conkyrc > ./bin/log.txt 2>&1" > RunConky.sh
 chmod +x ./RunConky.sh
@@ -30,6 +31,7 @@ rm -rf ./.git
 rm -rf ./.gitignore
 rm -rf ./Deploy.sh
 mkdir ./bin/ #This will be deleted and recreated with the startup script, but it assumes that a bin directory exists, so we are creating one just in case here
+#TODO: put a file in ./bin/ about some deployment info (eg. latest git commit/sha, deployment time)
 
 #Starts conky using the newly created startup script
 ./RunConky.sh
