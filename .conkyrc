@@ -21,7 +21,7 @@ conky.config = {
 	lua_shutdown_hook = "shutdown",
 
 	minimum_width = 3840,
-	minimum_height = 2160,
+	minimum_height = 2160 - 100,
 
 	update_interval = 1.0
 }

@@ -66,7 +66,7 @@ The draw function that describes how the window will look
 function draw(surface, context)
 
 	-------------------- LEFT DIVIDER --------------------
-	DrawingUtility.drawLine(context, conky_window.width / 2, 50, conky_window.width / 2, conky_window.height - 140)
+	DrawingUtility.drawLine(context, conky_window.width / 2, 50, conky_window.width / 2, conky_window.height - 40)
 
 	-------------------- TITLE --------------------
 	local titleText = "Saurabh Totey"
