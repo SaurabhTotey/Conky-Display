@@ -16,7 +16,7 @@ cd $projectDir || exit
 #Creates a startup script in the output directory that allows the currently deployed conky setup to be easily run and logged
 runConkyScript=(
 "#!/bin/bash"
-"cd {{PROJECT}} || exit"
+"cd $projectDir || exit"
 "killall conky > /dev/null 2>&1"
 "numberOfFiles=\$(find ./bin | wc -l)"
 "numberOfFiles=\$((numberOfFiles - 1))"
@@ -50,7 +50,7 @@ rm -rf ./.gitignore
 rm -rf ./Deploy.sh
 
 #Replaces '{{PROJECT}}' with the path to the real project
-fileGlobs=(".conkyrc" "*.lua" "*.txt" "*.sh")
+fileGlobs=(".conkyrc" "*.lua" "*.txt")
 for glob in "${fileGlobs[@]}"
 do
 	find . -name "$glob" -exec sed -i -e "s+{{PROJECT}}+$projectDir+g" {} \;
