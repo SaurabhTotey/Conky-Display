@@ -34,7 +34,7 @@ chmod +x ./RunConky.sh
 #Gets any relevant git info
 gitCommitInfo=$(git log -1)
 isCleanMessage="This deployed version has changes that have not been committed as of the time of deploy."
-if [ -z "$(git status --porcelain)" ]; then
+if output=$(git diff --exit-code) && [ -z "$output" ]; then
 	isCleanMessage="This deployed version has no uncommited changes as of the time of deploy."
 fi
 
