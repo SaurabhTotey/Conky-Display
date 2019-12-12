@@ -23,8 +23,8 @@ runConkyScript=(
 "logFileLocation=\"./bin/log\$numberOfFiles.txt\""
 "touch \$logFileLocation"
 "dateTimeInfo=\$(date \"+%d/%m/%Y %H:%M:%S\")"
-"printf \"%s\n\" \"Running conky at \$dateTimeInfo.\" \"\" > \$logFileLocation" #TODO: this gets overwritten
-"conky -DD -d -c $projectDir/.conkyrc > \$logFileLocation 2>&1"
+"printf \"%s\n\" \"Running conky at \$dateTimeInfo.\" \"\" > \$logFileLocation"
+"conky -DD -d -c $projectDir/.conkyrc >> \$logFileLocation 2>&1"
 )
 
 touch ./RunConky.sh
