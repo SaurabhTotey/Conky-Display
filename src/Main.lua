@@ -21,7 +21,7 @@ function conky_startup()
 		environmentVariables[string.sub(line, 1, splitIndex - 1)] = string.sub(line, splitIndex + 1, string.len(line))
 	end
 
-	LayoutUtility.initialize()
+	LayoutUtility.initialize(8, 84, 5)
 end
 
 --[[

@@ -8,7 +8,7 @@ local LayoutUtility = {
 Initializes the LayoutUtility and sets how it should draw things
 ]]
 function LayoutUtility.initialize(totalRows, totalCols, elementPadding)
-	--TODO: assert that initialize hasn't been called before (totalRows and totalCols are uninitialized)
+	assert(LayoutUtility.totalRows == nil and LayoutUtility.totalCols == nil and LayoutUtility.elementPadding == nil)
 
 	LayoutUtility.totalRows = totalRows
 	LayoutUtility.totalCols = totalCols
@@ -33,11 +33,33 @@ Accepts a display element to start rendering
 Always places the display element in the lowest row first and then the first available column
 ]]
 function LayoutUtility.addDisplayElement(displayElement)
-	--TODO: assert that LayoutUtility has been initialized (totalRows and totalCols are initialized)
+	assert(LayoutUtility.totalRows ~= nil and LayoutUtility.totalCols ~= nil and LayoutUtility.elementPadding ~= nil)
 
-	--TODO: find first unoccupied row and col; go by rows first and then by cols
-	local currentRow = 0
-	local currentCol = 0
+	--Returns whether the given row and column is occupied by another display element
+	function isSpaceOccupied(r, c)
+		for i, elementInstance in ipairs(LayoutUtility.displayElementInstances) do
+			if elementInstance.row <= r and elementInstance.row + elementInstance.displayElement.rowSpan > r and elementInstance.col <= c and elementInstance.displayElement.colSpan > c then
+				return true
+			end
+		end
+		return false
+	end
+
+	--Finds the first unoccupied row and column TODO: this can be made more efficient
+	local currentRow = -1
+	local currentCol = -1
+	for row = 0, LayoutUtility.totalRows - 1 do
+		for col = 0, LayoutUtility.totalCols - 1 do
+			if not isSpaceOccupied(row, col) then
+				currentRow = row
+				currentCol = col
+				break
+			end
+		end
+		if currentRow ~= -1 then
+			break
+		end
+	end
 
 	--Adds an instance of the displayElement to the LayoutUtility: instance contain all the information of a display element in additon to position
 	table.insert(LayoutUtility.displayElementInstances, {
@@ -51,7 +73,7 @@ end
 Actually renders all display elements and handles the coordinate transformations to ensure that all render calls work correctly
 ]]
 function LayoutUtility.render(context)
-	--TODO: assert that LayoutUtility has been initialized (totalRows and totalCols are initialized)
+	assert(LayoutUtility.totalRows ~= nil and LayoutUtility.totalCols ~= nil and LayoutUtility.elementPadding ~= nil)
 
 	for i, elementInstance in ipairs(LayoutUtility.displayElementInstances) do
 		local row = elementInstance.row
@@ -59,11 +81,10 @@ function LayoutUtility.render(context)
 		local rowSpan = elementInstance.displayElement.rowSpan
 		local colSpan = elementInstance.displayElement.colSpan
 
-		--TODO: initialize x, y, w, and h correctly
-		local x = col
-		local y = row
-		local w = colSpan
-		local h = rowSpan
+		local w = (conky_window.width / 2 - LayoutUtility.elementPadding * (LayoutUtility.totalCols + 1)) / LayoutUtility.totalCols * colSpan
+		local h = (conky_window.height - LayoutUtility.elementPadding * (LayoutUtility.totalRows + 1)) / LayoutUtility.totalRows * rowSpan
+		local x = (col - 1) * w + col * LayoutUtility.elementPadding
+		local y = (row - 1) * h + row * LayoutUtility.elementPadding
 
 		cairo_translate(context, x, y)
 		elementInstance.displayElement.render(w, h)
