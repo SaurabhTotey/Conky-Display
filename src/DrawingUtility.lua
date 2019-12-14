@@ -96,9 +96,9 @@ function DrawingUtility.fitTextInsideRectangle(context, text, rectangle, align)
 
 	--Write the text in the correct aligned position
 	if align == "center" then
-		DrawingUtility.writeText(context, text, rectangle.x + (rectangle.w - textSize.w) / 2, rectangle.y + (rectangle.h - textSize.h) / 2)
+		DrawingUtility.writeText(context, text, rectangle.x + (rectangle.w - textSize.w) / 2, rectangle.y + (rectangle.h + textSize.h) / 2)
 	else
-		DrawingUtility.writeText(context, text, rectangle.x, rectangle.y)
+		DrawingUtility.writeText(context, text, rectangle.x, rectangle.y + textSize.h)
 	end
 
 end

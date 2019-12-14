@@ -1,6 +1,5 @@
 
 conky.config = {
-	alignment = 'middle_right',
 	background = false,
 	own_window = true,
 	own_window_type = 'desktop',
@@ -21,7 +20,7 @@ conky.config = {
 	lua_shutdown_hook = "shutdown",
 
 	minimum_width = 3840,
-	minimum_height = 2160 - 100,
+	minimum_height = 2160 - 65,
 
 	update_interval = 1.0
 }

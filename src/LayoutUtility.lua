@@ -92,7 +92,7 @@ function LayoutUtility.render(context)
 		local colSpan = elementInstance.displayElement.colSpan
 
 		local x = col * columnWidth + (col + 1) * LayoutUtility.elementPadding + conky_window.width / 2
-		local y = (row + 1) * rowHeight + (row + 2) * LayoutUtility.elementPadding
+		local y = row * rowHeight + (row + 1) * LayoutUtility.elementPadding
 		local w = columnWidth * colSpan + (colSpan - 1) * LayoutUtility.elementPadding
 		local h = rowHeight * rowSpan + (rowSpan - 1) * LayoutUtility.elementPadding
 
