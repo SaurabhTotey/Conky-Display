@@ -39,6 +39,12 @@ function conky_startup()
 		--Displays weather information
 		DrawingUtility.fitTextInsideRectangle(context, weatherDescription, DrawingUtility.Rectangle(w / 2, 0, w / 2 - 5, h / 2 - 5))
 		DrawingUtility.fitTextInsideRectangle(context, temperature, DrawingUtility.Rectangle(w / 2, h / 2, w / 2 - 5, h / 4 - 5))
+		local scaleX = w / 2 / cairo_image_surface_get_width(weatherIcon)
+		local scaleY = h / cairo_image_surface_get_height(weatherIcon)
+		cairo_scale(context, scaleX, scaleY)
+		cairo_set_source_surface(context, weatherIcon, 0, 0)
+		cairo_paint(context)
+		cairo_scale(context, 1 / scaleX, 1 / scaleY)
 
 	end))
 
