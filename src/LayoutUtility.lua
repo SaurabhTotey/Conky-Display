@@ -45,7 +45,7 @@ function LayoutUtility.addDisplayElement(displayElement)
 		return false
 	end
 
-	--Finds the first unoccupied row and column TODO: this can be made more efficient
+	--Finds the first unoccupied row and column TODO: this can be made more efficient and can be improved to stop overlaps
 	local currentRow = -1
 	local currentCol = -1
 	for row = 0, LayoutUtility.totalRows - 1 do
@@ -75,16 +75,19 @@ Actually renders all display elements and handles the coordinate transformations
 function LayoutUtility.render(context)
 	assert(LayoutUtility.totalRows ~= nil and LayoutUtility.totalCols ~= nil and LayoutUtility.elementPadding ~= nil)
 
+	local columnWidth = (conky_window.width / 2 - LayoutUtility.elementPadding * (LayoutUtility.totalCols + 1)) / LayoutUtility.totalCols
+	local rowHeight = (conky_window.height - LayoutUtility.elementPadding * (LayoutUtility.totalRows + 1)) / LayoutUtility.totalRows
+
 	for i, elementInstance in ipairs(LayoutUtility.displayElementInstances) do
 		local row = elementInstance.row
 		local col = elementInstance.col
 		local rowSpan = elementInstance.displayElement.rowSpan
 		local colSpan = elementInstance.displayElement.colSpan
 
-		local w = (conky_window.width / 2 - LayoutUtility.elementPadding * (LayoutUtility.totalCols + 1)) / LayoutUtility.totalCols * colSpan
-		local h = (conky_window.height - LayoutUtility.elementPadding * (LayoutUtility.totalRows + 1)) / LayoutUtility.totalRows * rowSpan
-		local x = (col - 1) * w + col * LayoutUtility.elementPadding
-		local y = (row - 1) * h + row * LayoutUtility.elementPadding
+		local x = col * columnWidth + (col + 1) * LayoutUtility.elementPadding + conky_window.width / 2
+		local y = row * rowHeight + (row + 1) * LayoutUtility.elementPadding
+		local w = columnWidth * colSpan + (colSpan - 1) * LayoutUtility.elementPadding
+		local h = rowHeight * rowSpan + (rowSpan - 1) * LayoutUtility.elementPadding
 
 		cairo_translate(context, x, y)
 		elementInstance.displayElement.render(w, h)
