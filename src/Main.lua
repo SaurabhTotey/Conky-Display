@@ -13,6 +13,7 @@ local NetworkUtility = require("NetworkUtility")
 Extract environment variables from the .env file and initializes the layout
 ]]
 function conky_startup()
+
 	local environmentVariables = {}
 	for line in io.lines("{{PROJECT}}/.env") do
 		local splitIndex = string.find(line, "=")
@@ -29,6 +30,7 @@ function conky_startup()
 
 	-------------------- WEATHER --------------------
 	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
+		DrawingUtility.setTextOptions(context)
 
 		--Load weather data
 		local weatherData = json.decode(NetworkUtility.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric"))
@@ -49,10 +51,20 @@ function conky_startup()
 	end))
 
 	-------------------- WORD OF THE DAY --------------------
-	--TODO:
+	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
+		DrawingUtility.setTextOptions(context)
+		local wordOfTheDayData = json.decode(NetworkUtility.request("https://api.wordnik.com/v4/words.json/wordOfTheDay?api_key=" .. environmentVariables["WORD_KEY"], 60 * 60))
+		local wordOfTheDay = wordOfTheDayData["word"]
+		local definition = wordOfTheDayData["definitions"][1]["text"]
+		DrawingUtility.fitTextInsideRectangle(context, wordOfTheDay, DrawingUtility.Rectangle(0, 0, w, h / 5))
+		--TODO: split up definition into multiple lines and fit those in somehow
+	end))
 
 	-------------------- TIME AND DAY --------------------
-	--TODO:
+	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
+
+	end))
+
 end
 
 --[[
