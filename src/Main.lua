@@ -20,12 +20,12 @@ function conky_startup()
 		environmentVariables[string.sub(line, 1, splitIndex - 1)] = string.sub(line, splitIndex + 1, string.len(line))
 	end
 
-	LayoutUtility.initialize(24, 84, 5)
+	LayoutUtility.initialize(24, 84, 25)
 
 	-------------------- TITLE --------------------
 	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(1, 84, function(context, w, h)
 		DrawingUtility.setTextOptions(context)
-		DrawingUtility.fitTextInsideRectangle(context, "Saurabh Totey", DrawingUtility.Rectangle(0, 0, w - 5, h - 5))
+		DrawingUtility.fitTextInsideRectangle(context, "Saurabh Totey", DrawingUtility.Rectangle(0, 0, w, h))
 	end))
 
 	-------------------- WEATHER --------------------
@@ -39,25 +39,24 @@ function conky_startup()
 		local temperature = math.floor(weatherData["main"]["temp"] + 0.5) .. "°C"
 
 		--Displays weather information
-		DrawingUtility.fitTextInsideRectangle(context, weatherDescription, DrawingUtility.Rectangle(w / 2, 0, w / 2 - 5, h / 2 - 5))
-		DrawingUtility.fitTextInsideRectangle(context, temperature, DrawingUtility.Rectangle(w / 2, h / 2, w / 2 - 5, h / 4 - 5))
-		local scaleX = w / 2 / cairo_image_surface_get_width(weatherIcon)
-		local scaleY = h / cairo_image_surface_get_height(weatherIcon)
-		cairo_scale(context, scaleX, scaleY)
+		DrawingUtility.fitTextInsideRectangle(context, weatherDescription, DrawingUtility.Rectangle(h, 0, w - h, h / 2))
+		DrawingUtility.fitTextInsideRectangle(context, temperature, DrawingUtility.Rectangle(h, h / 2, w - h, h / 4))
+		local scale = h / cairo_image_surface_get_height(weatherIcon)
+		cairo_scale(context, scale, scale)
 		cairo_set_source_surface(context, weatherIcon, 0, 0)
 		cairo_paint(context)
-		cairo_scale(context, 1 / scaleX, 1 / scaleY)
-
+		cairo_scale(context, 1 / scale, 1 / scale)
 	end))
 
 	-------------------- WORD OF THE DAY --------------------
 	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
 		DrawingUtility.setTextOptions(context)
+
 		local wordOfTheDayData = json.decode(NetworkUtility.request("https://api.wordnik.com/v4/words.json/wordOfTheDay?api_key=" .. environmentVariables["WORD_KEY"], 60 * 60))
 		local wordOfTheDay = wordOfTheDayData["word"]
 		local definition = wordOfTheDayData["definitions"][1]["text"]
 		DrawingUtility.fitTextInsideRectangle(context, wordOfTheDay, DrawingUtility.Rectangle(0, 0, w, h / 5))
-		--TODO: split up definition into multiple lines and fit those in somehow
+		--TODO: split up definition into 4 lines somehow then write them in
 	end))
 
 	-------------------- TIME AND DAY --------------------
