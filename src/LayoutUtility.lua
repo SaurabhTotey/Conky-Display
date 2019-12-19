@@ -1,5 +1,7 @@
 require "cairo"
 
+--TODO: see if caching renders is possible (eg. draw them on a saved surface?) and allow components to specify when they should be updated/re-rendered
+
 local LayoutUtility = {
 	displayElementInstances = {}
 }

@@ -20,7 +20,7 @@ function conky_startup()
 		environmentVariables[string.sub(line, 1, splitIndex - 1)] = string.sub(line, splitIndex + 1, string.len(line))
 	end
 
-	LayoutUtility.initialize(24, 84, 25)
+	LayoutUtility.initialize(24, 84, 50)
 
 	-------------------- TITLE --------------------
 	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(1, 84, function(context, w, h)
@@ -52,11 +52,21 @@ function conky_startup()
 	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
 		DrawingUtility.setTextOptions(context)
 
+		--Gets word data from the network
 		local wordOfTheDayData = json.decode(NetworkUtility.request("https://api.wordnik.com/v4/words.json/wordOfTheDay?api_key=" .. environmentVariables["WORD_KEY"], 60 * 60))
 		local wordOfTheDay = wordOfTheDayData["word"]
 		local definition = wordOfTheDayData["definitions"][1]["text"]
+		local definitionLength = string.len(definition)
+
+		--Draws the main word
 		DrawingUtility.fitTextInsideRectangle(context, wordOfTheDay, DrawingUtility.Rectangle(0, 0, w, h / 5))
-		--TODO: split up definition into 4 lines somehow then write them in
+
+		--TODO: split up definition into 4 lines in a better way
+		--Splits up the word's definition into 4 lines and then writes them below the word
+		for i = 0, 3 do
+			local definitionText = string.sub(definition, definitionLength * i / 4 + 1, definitionLength * (i + 1) / 4)
+			DrawingUtility.fitTextInsideRectangle(context, definitionText, DrawingUtility.Rectangle(0, (i + 1) * h / 5, w, h / 5))
+		end
 	end))
 
 	-------------------- TIME AND DAY --------------------
