@@ -61,11 +61,28 @@ function conky_startup()
 		--Draws the main word
 		DrawingUtility.fitTextInsideRectangle(context, wordOfTheDay, DrawingUtility.Rectangle(0, 0, w, h / 5))
 
-		--TODO: split up definition into 4 lines in a better way
 		--Splits up the word's definition into 4 lines and then writes them below the word
+		--TODO: figure out how to deal with if there are remaining words even after distributing them among lines and figure out how many lines the definition should be
+		local definitionFontSize = 32
+		cairo_set_font_size(context, definitionFontSize)
+		local remainingDefinitionWords = {}
+		for w in string.gmatch(definition, "%S+") do table.insert(remainingDefinitionWords, w) end
 		for i = 0, 3 do
-			local definitionText = string.sub(definition, definitionLength * i / 4 + 1, definitionLength * (i + 1) / 4)
-			DrawingUtility.fitTextInsideRectangle(context, definitionText, DrawingUtility.Rectangle(0, (i + 1) * h / 5, w, h / 5))
+			local currentLineWords = { remainingDefinitionWords[1] }
+			local currentLine = remainingDefinitionWords[1]
+			local j = 1
+			while DrawingUtility.getTextSize(context, currentLine).w <= w do
+				j = j + 1
+				table.insert(currentLineWords, remainingDefinitionWords[j])
+				currentLine = currentLine .. " " .. remainingDefinitionWords[j]
+			end
+			table.remove(currentLineWords, j)
+			j = j - 1
+			currentLine = table.concat(currentLineWords, " ")
+			DrawingUtility.writeText(context, currentLine, 0, (i + 1) * h / 5 + DrawingUtility.getTextSize(context, currentLine).h)
+			for k = 1, j do
+				table.remove(remainingDefinitionWords, 1)
+			end
 		end
 	end))
 

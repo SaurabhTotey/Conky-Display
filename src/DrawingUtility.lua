@@ -73,6 +73,7 @@ end
 A function that fits the given text inside the given rectangle, growing to take up as much available space inside the rectangle as possible
 align is an optional parameter that specifies whether the text should be centered or left aligned ("center", "left"); default is center
 Will change the text fontSize
+Returns the new text font size
 ]]
 function DrawingUtility.fitTextInsideRectangle(context, text, rectangle, align)
 
@@ -100,6 +101,8 @@ function DrawingUtility.fitTextInsideRectangle(context, text, rectangle, align)
 	else
 		DrawingUtility.writeText(context, text, rectangle.x, rectangle.y + textSize.h)
 	end
+
+	return maximalFittingFontSize
 
 end
 
