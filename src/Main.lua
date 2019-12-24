@@ -73,6 +73,9 @@ function conky_startup()
 			local j = 1
 			while DrawingUtility.getTextSize(context, currentLine).w <= w do
 				j = j + 1
+				if j > table.getn(remainingDefinitionWords) then
+					break
+				end
 				table.insert(currentLineWords, remainingDefinitionWords[j])
 				currentLine = currentLine .. " " .. remainingDefinitionWords[j]
 			end
