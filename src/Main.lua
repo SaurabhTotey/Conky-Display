@@ -58,35 +58,43 @@ function conky_startup()
 		local definition = wordOfTheDayData["definitions"][1]["text"]
 		local definitionLength = string.len(definition)
 
-		--Draws the main word
-		DrawingUtility.fitTextInsideRectangle(context, wordOfTheDay, DrawingUtility.Rectangle(0, 0, w, h / 5))
-
 		--Splits up the word's definition into 4 lines and then writes them below the word
-		--TODO: figure out how to deal with if there are remaining words even after distributing them among lines and figure out how many lines the definition should be
+		--TODO: avoid using DrawingUtility.clearRectangle and DrawingUtility.writeText until sizings are finalized
+		local tryDisplayingDefinitionAgain = true
 		local definitionFontSize = 32
-		cairo_set_font_size(context, definitionFontSize)
-		local remainingDefinitionWords = {}
-		for w in string.gmatch(definition, "%S+") do table.insert(remainingDefinitionWords, w) end
-		for i = 0, 3 do
-			local currentLineWords = { remainingDefinitionWords[1] }
-			local currentLine = remainingDefinitionWords[1]
-			local j = 1
-			while DrawingUtility.getTextSize(context, currentLine).w <= w do
-				j = j + 1
-				if j > table.getn(remainingDefinitionWords) then
-					break
+		while tryDisplayingDefinitionAgain do
+			cairo_set_font_size(context, definitionFontSize)
+			local remainingDefinitionWords = {}
+			for w in string.gmatch(definition, "%S+") do table.insert(remainingDefinitionWords, w) end
+			for i = 1, 4 do
+				local currentLineWords = { remainingDefinitionWords[1] }
+				local currentLine = remainingDefinitionWords[1]
+				local j = 1
+				while DrawingUtility.getTextSize(context, currentLine).w <= w do
+					j = j + 1
+					if j > table.getn(remainingDefinitionWords) then
+						break
+					end
+					table.insert(currentLineWords, remainingDefinitionWords[j])
+					currentLine = currentLine .. " " .. remainingDefinitionWords[j]
 				end
-				table.insert(currentLineWords, remainingDefinitionWords[j])
-				currentLine = currentLine .. " " .. remainingDefinitionWords[j]
+				table.remove(currentLineWords, j)
+				j = j - 1
+				currentLine = table.concat(currentLineWords, " ")
+				DrawingUtility.writeText(context, currentLine, 0, i * h / 5 + definitionFontSize)
+				for k = 1, j do
+					table.remove(remainingDefinitionWords, 1)
+				end
 			end
-			table.remove(currentLineWords, j)
-			j = j - 1
-			currentLine = table.concat(currentLineWords, " ")
-			DrawingUtility.writeText(context, currentLine, 0, (i + 1) * h / 5 + DrawingUtility.getTextSize(context, currentLine).h)
-			for k = 1, j do
-				table.remove(remainingDefinitionWords, 1)
+			tryDisplayingDefinitionAgain = (table.getn(remainingDefinitionWords) > 0) and definitionFontSize > 20
+			if tryDisplayingDefinitionAgain then
+				definitionFontSize = definitionFontSize - 1
+				DrawingUtility.clearRectangle(context, DrawingUtility.Rectangle(0, h / 5, w, 4 * h / 5))
 			end
 		end
+
+		--Draws the main word
+		DrawingUtility.fitTextInsideRectangle(context, wordOfTheDay, DrawingUtility.Rectangle(0, 0, w, h / 5))
 	end))
 
 	-------------------- TIME AND DAY --------------------

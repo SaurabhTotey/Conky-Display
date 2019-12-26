@@ -147,4 +147,15 @@ function DrawingUtility.drawRectangle(context, rectangle)
 	cairo_stroke(context)
 end
 
+--[[
+Clears anything in the given rectangle
+]]
+function DrawingUtility.clearRectangle(context, rectangle)
+	local oldOperator = cairo_get_operator(context)
+	cairo_set_operator(context, CAIRO_OPERATOR_CLEAR)
+	cairo_rectangle(context, rectangle.x, rectangle.y, rectangle.w, rectangle.h)
+	cairo_fill(context)
+	cairo_set_operator(context, oldOperator)
+end
+
 return DrawingUtility
