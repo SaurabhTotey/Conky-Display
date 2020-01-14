@@ -3,7 +3,7 @@ require "cairo"
 --TODO: see if caching renders is possible (eg. draw them on a saved surface?) and allow components to specify when they should be updated/re-rendered
 
 local LayoutUtility = {
-	displayElementInstances = {}
+	displayElements = {}
 }
 
 --[[
@@ -25,56 +25,17 @@ function LayoutUtility.isInitialized()
 end
 
 --[[
-Creates a display element which is a rectangular section of something to draw
-It must define a render method (where the coordinates of the drawing happen relative to (0,0)) and give a row and column span
+Adds a display element to this layout utility which is a rectangular section of something to draw
+It must define a render method (where the coordinates of the drawing happen relative to (0,0)) and give a row, column, row span, and column span
 render should take in a context, width, and a height
 ]]
-function LayoutUtility.createDisplayElement(rowSpan, colSpan, render)
-	return {
+function LayoutUtility.addDisplayElement(row, col, rowSpan, colSpan, render)
+	table.insert(LayoutUtility.displayElements, {
+		row = row,
+		col = col,
 		rowSpan = rowSpan,
 		colSpan = colSpan,
 		render = render
-	}
-end
-
---[[
-Accepts a display element to start rendering
-Always places the display element in the lowest row first and then the first available column
-]]
-function LayoutUtility.addDisplayElement(displayElement)
-	assert(LayoutUtility.isInitialized())
-
-	--Returns whether the given row and column is occupied by another display element
-	function isSpaceOccupied(r, c)
-		for i, elementInstance in ipairs(LayoutUtility.displayElementInstances) do
-			if elementInstance.row <= r and elementInstance.row + elementInstance.displayElement.rowSpan > r and elementInstance.col <= c and elementInstance.displayElement.colSpan > c then
-				return true
-			end
-		end
-		return false
-	end
-
-	--Finds the first unoccupied row and column TODO: this can be made more efficient and can be improved to stop overlaps
-	local currentRow = -1
-	local currentCol = -1
-	for row = 0, LayoutUtility.totalRows - 1 do
-		for col = 0, LayoutUtility.totalCols - 1 do
-			if not isSpaceOccupied(row, col) then
-				currentRow = row
-				currentCol = col
-				break
-			end
-		end
-		if currentRow ~= -1 then
-			break
-		end
-	end
-
-	--Adds an instance of the displayElement to the LayoutUtility: instance contain all the information of a display element in additon to position
-	table.insert(LayoutUtility.displayElementInstances, {
-		displayElement = displayElement,
-		row = currentRow,
-		col = currentCol
 	})
 end
 
@@ -87,11 +48,11 @@ function LayoutUtility.render(context)
 	local columnWidth = (conky_window.width / 2 - LayoutUtility.elementPadding * (LayoutUtility.totalCols + 1)) / LayoutUtility.totalCols
 	local rowHeight = (conky_window.height - LayoutUtility.elementPadding * (LayoutUtility.totalRows + 1)) / LayoutUtility.totalRows
 
-	for i, elementInstance in ipairs(LayoutUtility.displayElementInstances) do
-		local row = elementInstance.row
-		local col = elementInstance.col
-		local rowSpan = elementInstance.displayElement.rowSpan
-		local colSpan = elementInstance.displayElement.colSpan
+	for i, displayElement in ipairs(LayoutUtility.displayElements) do
+		local row = displayElement.row
+		local col = displayElement.col
+		local rowSpan = displayElement.rowSpan
+		local colSpan = displayElement.colSpan
 
 		local x = col * columnWidth + (col + 1) * LayoutUtility.elementPadding + conky_window.width / 2
 		local y = row * rowHeight + (row + 1) * LayoutUtility.elementPadding
@@ -99,7 +60,7 @@ function LayoutUtility.render(context)
 		local h = rowHeight * rowSpan + (rowSpan - 1) * LayoutUtility.elementPadding
 
 		cairo_translate(context, x, y)
-		elementInstance.displayElement.render(context, w, h)
+		displayElement.render(context, w, h)
 		cairo_identity_matrix(context)
 	end
 end

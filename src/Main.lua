@@ -23,13 +23,13 @@ function conky_startup()
 	LayoutUtility.initialize(24, 84, 50)
 
 	-------------------- TITLE --------------------
-	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(1, 84, function(context, w, h)
+	LayoutUtility.addDisplayElement(0, 0, 1, 84, function(context, w, h)
 		DrawingUtility.setTextOptions(context)
 		DrawingUtility.fitTextInsideRectangle(context, "Saurabh Totey", DrawingUtility.Rectangle(0, 0, w, h))
-	end))
+	end)
 
 	-------------------- WEATHER --------------------
-	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
+	LayoutUtility.addDisplayElement(1, 0, 3, 28, function(context, w, h)
 		DrawingUtility.setTextOptions(context)
 
 		--Load weather data
@@ -46,10 +46,10 @@ function conky_startup()
 		cairo_set_source_surface(context, weatherIcon, 0, 0)
 		cairo_paint(context)
 		cairo_scale(context, 1 / scale, 1 / scale)
-	end))
+	end)
 
 	-------------------- WORD OF THE DAY --------------------
-	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
+	LayoutUtility.addDisplayElement(1, 28, 3, 28, function(context, w, h)
 		DrawingUtility.setTextOptions(context)
 
 		--Gets word data from the network
@@ -95,16 +95,17 @@ function conky_startup()
 
 		--Draws the main word
 		DrawingUtility.fitTextInsideRectangle(context, wordOfTheDay, DrawingUtility.Rectangle(0, 0, w, h / 5))
-	end))
+	end)
 
 	-------------------- TIME AND DAY --------------------
-	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
+	LayoutUtility.addDisplayElement(1, 56, 3, 28, function(context, w, h)
+		--TODO: fit some sort of clock graphic to the left of this element and have the date and time info written on the right
 		DrawingUtility.setTextOptions(context)
 		local dateString = os.date("%A, %B %d %Y")
-		local timeString = os.date("%H : %M : %S")
+		local timeString = os.date("%H : %M")
 		DrawingUtility.fitTextInsideRectangle(context, dateString, DrawingUtility.Rectangle(0, 0, w, h / 2))
 		DrawingUtility.fitTextInsideRectangle(context, timeString, DrawingUtility.Rectangle(0, h / 2, w, h / 2))
-	end))
+	end)
 
 end
 
