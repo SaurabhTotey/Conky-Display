@@ -99,7 +99,11 @@ function conky_startup()
 
 	-------------------- TIME AND DAY --------------------
 	LayoutUtility.addDisplayElement(LayoutUtility.createDisplayElement(3, 28, function(context, w, h)
-
+		DrawingUtility.setTextOptions(context)
+		local dateString = os.date("%A, %B %d %Y")
+		local timeString = os.date("%H : %M : %S")
+		DrawingUtility.fitTextInsideRectangle(context, dateString, DrawingUtility.Rectangle(0, 0, w, h / 2))
+		DrawingUtility.fitTextInsideRectangle(context, timeString, DrawingUtility.Rectangle(0, h / 2, w, h / 2))
 	end))
 
 end
