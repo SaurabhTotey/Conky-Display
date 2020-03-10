@@ -26,14 +26,16 @@ function conky_startup()
 	LayoutUtility.addDisplayElement(0, 0, 1, 84, function(context, w, h)
 		DrawingUtility.setTextOptions(context)
 		DrawingUtility.fitTextInsideRectangle(context, "Saurabh Totey", DrawingUtility.Rectangle(0, 0, w, h))
+	end,
+	function()
+		return 0
 	end)
 
 	-------------------- WEATHER --------------------
-	LayoutUtility.addDisplayElement(1, 0, 3, 28, function(context, w, h)
+	LayoutUtility.addDisplayElement(1, 0, 3, 28, function(context, w, h, weatherData)
 		DrawingUtility.setTextOptions(context)
 
-		--Load weather data
-		local weatherData = json.decode(NetworkUtility.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric"))
+		--Parse weather data
 		local weatherDescription = weatherData["weather"][1]["description"]
 		local weatherIcon = ImageUtility.getImageSurface("{{PROJECT}}/assets/weather-icons/" .. string.gsub(weatherDescription, "%s+", "-") .. ".png")
 		local temperature = math.floor(weatherData["main"]["temp"] + 0.5) .. "°C"
@@ -46,14 +48,16 @@ function conky_startup()
 		cairo_set_source_surface(context, weatherIcon, 0, 0)
 		cairo_paint(context)
 		cairo_scale(context, 1 / scale, 1 / scale)
+	end,
+	function()
+		return json.decode(NetworkUtility.request("http://api.openweathermap.org/data/2.5/weather?appid=" .. environmentVariables["WEATHER_KEY"] .. "&id=" .. environmentVariables["CITY_ID"] .. "&units=metric")) --TODO: put the JSON decode in the actual render method
 	end)
 
 	-------------------- WORD OF THE DAY --------------------
-	LayoutUtility.addDisplayElement(1, 28, 3, 28, function(context, w, h)
+	LayoutUtility.addDisplayElement(1, 28, 3, 28, function(context, w, h, wordOfTheDayData)
 		DrawingUtility.setTextOptions(context)
 
-		--Gets word data from the network
-		local wordOfTheDayData = json.decode(NetworkUtility.request("https://api.wordnik.com/v4/words.json/wordOfTheDay?api_key=" .. environmentVariables["WORD_KEY"], 60 * 60))
+		--Parses word data
 		local wordOfTheDay = wordOfTheDayData["word"]
 		local definition = wordOfTheDayData["definitions"][1]["text"]
 		local definitionLength = string.len(definition)
@@ -95,16 +99,21 @@ function conky_startup()
 
 		--Draws the main word
 		DrawingUtility.fitTextInsideRectangle(context, wordOfTheDay, DrawingUtility.Rectangle(0, 0, w, h / 5))
+	end,
+	function()
+		return json.decode(NetworkUtility.request("https://api.wordnik.com/v4/words.json/wordOfTheDay?api_key=" .. environmentVariables["WORD_KEY"], 60 * 60)) --Put the json.decode in the actual render method
 	end)
 
 	-------------------- TIME AND DAY --------------------
-	LayoutUtility.addDisplayElement(1, 56, 3, 28, function(context, w, h)
+	LayoutUtility.addDisplayElement(1, 56, 3, 28, function(context, w, h, timeString)
 		--TODO: fit some sort of clock graphic to the left of this element and have the date and time info written on the right
 		DrawingUtility.setTextOptions(context)
 		local dateString = os.date("%A, %B %d %Y")
-		local timeString = os.date("%H : %M")
 		DrawingUtility.fitTextInsideRectangle(context, dateString, DrawingUtility.Rectangle(0, 0, w, h / 2))
 		DrawingUtility.fitTextInsideRectangle(context, timeString, DrawingUtility.Rectangle(0, h / 2, w, h / 2))
+	end,
+	function()
+		return os.date("%H : %M")
 	end)
 
 end

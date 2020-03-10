@@ -26,21 +26,24 @@ end
 
 --[[
 Adds a display element to this layout utility which is a rectangular section of something to draw
-It must define a render method (where the coordinates of the drawing happen relative to (0,0)) and give a row, column, row span, and column span
-render should take in a context, width, and a height
+It must define a key and render method (where the coordinates of the drawing happen relative to (0,0)) and give a row, column, row span, and column span
+render should take in a context, width, height, and a key
+The element is only re-rendered whenever the key is nil or returns a different value from the previous render
 ]]
-function LayoutUtility.addDisplayElement(row, col, rowSpan, colSpan, render)
+function LayoutUtility.addDisplayElement(row, col, rowSpan, colSpan, render, key)
 	table.insert(LayoutUtility.displayElements, {
 		row = row,
 		col = col,
 		rowSpan = rowSpan,
 		colSpan = colSpan,
-		render = render
+		render = render,
+		key = key
 	})
 end
 
 --[[
 Actually renders all display elements and handles the coordinate transformations to ensure that all render calls work correctly
+TODO: manage keys and not rendering elements with unchanged keys
 ]]
 function LayoutUtility.render(context)
 	assert(LayoutUtility.isInitialized())
@@ -49,6 +52,11 @@ function LayoutUtility.render(context)
 	local rowHeight = (conky_window.height - LayoutUtility.elementPadding * (LayoutUtility.totalRows + 1)) / LayoutUtility.totalRows
 
 	for i, displayElement in ipairs(LayoutUtility.displayElements) do
+		local keyChanged = displayElement.key == nil --TODO: or displayElement.key returns a different value
+		if not keyChanged then
+			goto continue --TODO: we still need to render the element, we just don't need to re-run displayElement.render
+		end
+
 		local row = displayElement.row
 		local col = displayElement.col
 		local rowSpan = displayElement.rowSpan
@@ -62,6 +70,8 @@ function LayoutUtility.render(context)
 		cairo_translate(context, x, y)
 		displayElement.render(context, w, h)
 		cairo_identity_matrix(context)
+
+		::continue::
 	end
 end
 
